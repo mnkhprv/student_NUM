@@ -1,0 +1,5 @@
+uml - d 
+temdeglegee zuv heregleh 
+- private
++ public
+

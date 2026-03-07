@@ -1,0 +1,46 @@
+body {
+  background-color: rgb(255, 255, 255);
+}
+
+ul {
+  text-decoration: none;
+  width: 100%;
+  height: auto;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  gap: 10px;
+}
+
+ul li {
+  height: auto;
+  padding: 10px;
+  width: 100%;
+  background-color: rgb(4, 20, 50);
+  border-radius: 5px;
+  text-align: center;
+  transition: padding 2s;
+}
+
+ul li a {
+  color: #ffffff;
+  text-decoration: none;
+}
+
+ul :hover{
+  color: #ffffff;
+  text-decoration: none;
+  background-color: blue;
+  padding: 30px;
+}
+
+main{
+  background: rgb(1, 100, 187);
+  color: #ffffff;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding: 60px 40px;
+}

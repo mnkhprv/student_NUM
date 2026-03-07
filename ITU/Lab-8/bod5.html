@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+  </head>
+  <body>
+    <header>
+      <nav>
+        <ul>
+          <li><a href="bod1.html">Бодлого 1</a></li>
+          <li><a href="bod2.html">Бодлого 2</a></li>
+          <li><a href="bod3.html">Бодлого 3</a></li>
+          <li><a href="bod4.html">Бодлого 4</a></li>
+          <li><a href="bod5.html">Бодлого 5</a></li>
+        </ul>
+      </nav>
+    </header>
+    <main>
+      <div class="question">
+        <p> Вэб сайтруу өглөө ороход гараас өгсөн тооны 2 зэрэгийг, орой ороход гараас өгсөн тооны язгуурыг ол.</p>
+      </div>
+      <div>
+        <label for="number">Тоог оруулна уу:</label>
+        <input type="number" id="number" placeholder="Тоо оруулна уу">
+        <button onclick="bodoh()">Шалгах</button>
+      </div>
+      <div id="output" class="output"></div>
+    </main>
+    <script>
+      function bodoh() {
+        const number = parseFloat(document.getElementById('number').value);
+        
+        if (isNaN(number)) {
+          document.getElementById('output').textContent = "Та тоо оруулна уу!";
+          return;
+        }
+        const currentTime = new Date();
+        const hour = currentTime.getHours();
+        let result;
+        
+        if (hour >= 6 && hour < 12) {
+          result = number * number;
+          document.getElementById('output').textContent = `Өглөө: 2 Зэрэг: ${result}`;
+        }
+
+        else {
+          if (number >= 0) {
+            result = Math.sqrt(number);
+            document.getElementById('output').textContent = `Орой: Язгуур: ${result}`;
+          } else {
+            document.getElementById('output').textContent = "Орой: Та эерэг тоо оруулна уу!";
+          }
+        }
+      }
+    </script>
+  </body>
+</html>

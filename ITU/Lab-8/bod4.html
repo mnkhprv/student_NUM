@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+  </head>
+  <body>
+    <header>
+      <nav>
+        <ul>
+          <li><a href="bod1.html">Бодлого 1</a></li>
+          <li><a href="bod2.html">Бодлого 2</a></li>
+          <li><a href="bod3.html">Бодлого 3</a></li>
+          <li><a href="bod4.html">Бодлого 4</a></li>
+          <li><a href="bod5.html">Бодлого 5</a></li>
+        </ul>
+      </nav>
+    </header>
+    <main>
+      <div class="question">
+        <p>Array-д өгөгдсөн 5 тооны хамгийн бага ерөнхий хуваагдагчийг ол</p>
+      </div>
+      <div>
+        <label for="massive">Хүснэгт: </label>
+        <input type="numbers" id="massive" placeholder="Хүснэгтийн элемэнтийг оруулна уу">
+        <button onclick="bodoh ()">Шалгах</button>
+      </div>
+      <div id="output" class="output"></div>
+    </main>
+    </main>
+    <script>
+      function bodoh () {
+        function gcd(a, b) {
+          if (b === 0) return a;
+          return gcd(b, a % b);
+        }
+        function hbyh(a, b) {
+          return (a * b) / gcd(a, b);
+        }
+        function hbyhArray(numbers) {
+          return numbers.reduce((acc, num) => hbyh(acc, num), 1);
+        }
+        const input = document.getElementById('massive').value;
+        const numbers = input.split(',').map(Number);
+
+        if (numbers.some(isNaN)) {
+          document.getElementById('output').textContent = "Алдаа: Та 5 ширхэг тоог зөв оруулна уу.";
+          return;
+        }
+
+        const result = hbyhArray(numbers);
+        document.getElementById('output').textContent = `ХБЕХ: ${result}`;
+      }
+    </script>
+  </body>
+</html>

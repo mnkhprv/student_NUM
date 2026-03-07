@@ -1,0 +1,22 @@
+#
+# trace12.txt - Forward SIGTSTP to every process in foreground process group
+#
+tsh> ./mysplit 4
+Job [1] (64015) stopped by signal 20
+tsh> jobs
+[1] (64015) Stopped ./mysplit 4 
+tsh> /bin/ps a
+    PID TTY      STAT   TIME COMMAND
+   2668 tty2     Ssl+   0:00 /usr/libexec/gdm-wayland-session env GNOME_SHELL_SESSION_MODE=ubuntu /usr/bin/gnome-session --session=ubuntu
+   2681 tty2     Sl+    0:00 /usr/libexec/gnome-session-binary --session=ubuntu
+  20929 pts/0    Ss+    0:00 /usr/bin/bash --init-file /snap/code/215/usr/share/code/resources/app/out/vs/workbench/contrib/terminal/common/scripts/shellIntegration-bash.sh
+  44401 pts/1    Ss+    0:00 /usr/bin/bash --init-file /snap/code/215/usr/share/code/resources/app/out/vs/workbench/contrib/terminal/common/scripts/shellIntegration-bash.sh
+  51784 pts/2    Ss+    0:00 /usr/bin/bash --init-file /snap/code/215/usr/share/code/resources/app/out/vs/workbench/contrib/terminal/common/scripts/shellIntegration-bash.sh
+  60382 pts/3    Ss     0:00 /usr/bin/bash --init-file /snap/code/215/usr/share/code/resources/app/out/vs/workbench/contrib/terminal/common/scripts/shellIntegration-bash.sh
+  63248 pts/3    S+     0:00 make diff-all
+  63251 pts/3    S+     0:00 /bin/sh -c for t in trace01 trace02 trace03 trace04 trace05 trace06 trace07 trace08 trace09 trace10 trace11 trace12 trace13 trace14 trace15 trace16; do \ ?echo "==> Checking $t"; \ ?./sdriver.pl -t $t.txt -s ./tsh -a "-p" > diffout/$t.my; \ ?./sdriver.pl -t $t.txt -s ./tshref -a "-p" > diffout/$t.ref; \ ?diff -u diffout/$t.ref diffout/$t.my || true; \ done
+  64011 pts/3    S+     0:00 /usr/bin/perl ./sdriver.pl -t trace12.txt -s ./tsh -a -p
+  64013 pts/3    S+     0:00 ./tsh -p
+  64015 pts/3    T      0:00 ./mysplit 4
+  64016 pts/3    T      0:00 ./mysplit 4
+  64030 pts/3    R      0:00 /bin/ps a

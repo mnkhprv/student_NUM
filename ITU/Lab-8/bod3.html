@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+  </head>
+  <body>
+    <header>
+      <nav>
+        <ul>
+          <li><a href="bod1.html">Бодлого 1</a></li>
+          <li><a href="bod2.html">Бодлого 2</a></li>
+          <li><a href="bod3.html">Бодлого 3</a></li>
+          <li><a href="bod4.html">Бодлого 4</a></li>
+          <li><a href="bod5.html">Бодлого 5</a></li>
+        </ul>
+      </nav>
+    </header>
+    <main>
+      <div class="question">
+        <p> Байшин 9 давхар, 3 орцтой, давхартаа 4 айлтай бол гараас өгсөн тоот нь хэддүгээр орцны хэддүгээр давхарын хэд дэх хаалга вэ</p>
+      </div>
+      <div>
+        <label for="toot">Тоот: </label>
+        <input type="number" id="toot" placeholder="тоот оруулна уу">
+        <button onclick="bairnii_too_oloh()">Шалгая</button>
+      </div>
+      <div id="output" class="output"></div>
+    </main>
+    <script>
+      function bairnii_too_oloh () {
+        function bairnii_too(floor, orts, davharail, toot) { //toot = 50
+        const total_ail = floor * davharail * orts; //9*4*3=108
+
+        const ortsail = floor * davharail; //9*4=36
+
+        const orts_num = Math.ceil(toot / ortsail); //  50/36==2   36/36==1
+
+        const tootail = Math.floor((toot-1) % ortsail+1); //  50 % 36 == 14  35 % 36 + 1== 1
+
+        const floornum = Math.ceil(tootail / davharail); // 14 / 4 == 4   36 / 4 == 9
+
+        const davharttoot = tootail % davharail === 0
+          ? davharail
+          :(tootail-1) % davharail + 1; // 14 % 4 = 2
+
+        return {
+          orts: orts_num,
+          davhar: floornum,
+          toot: davharttoot
+        };
+      }
+
+      const floor = 9;
+      const orts = 3;
+      const davharail = 4;
+      const tootInput = document.getElementById('toot');
+      const toot = parseFloat(tootInput.value);
+      const result = bairnii_too(floor, orts, davharail, toot);
+      var output = document.getElementById('output');
+      output.textContent = `Entrance: ${result.orts}, Floor: ${result.davhar}, Apartment: ${result.toot}`;
+      }
+
+  
+ 
+      </script>
+  </body>
+</html>

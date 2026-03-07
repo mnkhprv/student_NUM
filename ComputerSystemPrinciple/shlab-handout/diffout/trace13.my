@@ -1,0 +1,36 @@
+#
+# trace13.txt - Restart every stopped process in process group
+#
+tsh> ./mysplit 4
+Job [1] (64074) stopped by signal 20
+tsh> jobs
+[1] (64074) Stopped ./mysplit 4 
+tsh> /bin/ps a
+    PID TTY      STAT   TIME COMMAND
+   2668 tty2     Ssl+   0:00 /usr/libexec/gdm-wayland-session env GNOME_SHELL_SESSION_MODE=ubuntu /usr/bin/gnome-session --session=ubuntu
+   2681 tty2     Sl+    0:00 /usr/libexec/gnome-session-binary --session=ubuntu
+  20929 pts/0    Ss+    0:00 /usr/bin/bash --init-file /snap/code/215/usr/share/code/resources/app/out/vs/workbench/contrib/terminal/common/scripts/shellIntegration-bash.sh
+  44401 pts/1    Ss+    0:00 /usr/bin/bash --init-file /snap/code/215/usr/share/code/resources/app/out/vs/workbench/contrib/terminal/common/scripts/shellIntegration-bash.sh
+  51784 pts/2    Ss+    0:00 /usr/bin/bash --init-file /snap/code/215/usr/share/code/resources/app/out/vs/workbench/contrib/terminal/common/scripts/shellIntegration-bash.sh
+  60382 pts/3    Ss     0:00 /usr/bin/bash --init-file /snap/code/215/usr/share/code/resources/app/out/vs/workbench/contrib/terminal/common/scripts/shellIntegration-bash.sh
+  63248 pts/3    S+     0:00 make diff-all
+  63251 pts/3    S+     0:00 /bin/sh -c for t in trace01 trace02 trace03 trace04 trace05 trace06 trace07 trace08 trace09 trace10 trace11 trace12 trace13 trace14 trace15 trace16; do \ ?echo "==> Checking $t"; \ ?./sdriver.pl -t $t.txt -s ./tsh -a "-p" > diffout/$t.my; \ ?./sdriver.pl -t $t.txt -s ./tshref -a "-p" > diffout/$t.ref; \ ?diff -u diffout/$t.ref diffout/$t.my || true; \ done
+  64070 pts/3    S+     0:00 /usr/bin/perl ./sdriver.pl -t trace13.txt -s ./tsh -a -p
+  64072 pts/3    S+     0:00 ./tsh -p
+  64074 pts/3    T      0:00 ./mysplit 4
+  64075 pts/3    T      0:00 ./mysplit 4
+  64101 pts/3    R      0:00 /bin/ps a
+tsh> fg %1
+tsh> /bin/ps a
+    PID TTY      STAT   TIME COMMAND
+   2668 tty2     Ssl+   0:00 /usr/libexec/gdm-wayland-session env GNOME_SHELL_SESSION_MODE=ubuntu /usr/bin/gnome-session --session=ubuntu
+   2681 tty2     Sl+    0:00 /usr/libexec/gnome-session-binary --session=ubuntu
+  20929 pts/0    Ss+    0:00 /usr/bin/bash --init-file /snap/code/215/usr/share/code/resources/app/out/vs/workbench/contrib/terminal/common/scripts/shellIntegration-bash.sh
+  44401 pts/1    Ss+    0:00 /usr/bin/bash --init-file /snap/code/215/usr/share/code/resources/app/out/vs/workbench/contrib/terminal/common/scripts/shellIntegration-bash.sh
+  51784 pts/2    Ss+    0:00 /usr/bin/bash --init-file /snap/code/215/usr/share/code/resources/app/out/vs/workbench/contrib/terminal/common/scripts/shellIntegration-bash.sh
+  60382 pts/3    Ss     0:00 /usr/bin/bash --init-file /snap/code/215/usr/share/code/resources/app/out/vs/workbench/contrib/terminal/common/scripts/shellIntegration-bash.sh
+  63248 pts/3    S+     0:00 make diff-all
+  63251 pts/3    S+     0:00 /bin/sh -c for t in trace01 trace02 trace03 trace04 trace05 trace06 trace07 trace08 trace09 trace10 trace11 trace12 trace13 trace14 trace15 trace16; do \ ?echo "==> Checking $t"; \ ?./sdriver.pl -t $t.txt -s ./tsh -a "-p" > diffout/$t.my; \ ?./sdriver.pl -t $t.txt -s ./tshref -a "-p" > diffout/$t.ref; \ ?diff -u diffout/$t.ref diffout/$t.my || true; \ done
+  64070 pts/3    S+     0:00 /usr/bin/perl ./sdriver.pl -t trace13.txt -s ./tsh -a -p
+  64072 pts/3    S+     0:00 ./tsh -p
+  64117 pts/3    R      0:00 /bin/ps a

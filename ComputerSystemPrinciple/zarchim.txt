@@ -1,0 +1,62 @@
+zarchim
+
+
+lecture 2
+
+	each bit 0 || 1
+	bit operations available in c are & | ~ ^ 
+	~0x41 -> ~0xBE
+		~
+	Logical Operators
+		view 0 as false
+		anything nonzero is true
+		always return 0 or 1
+		early termination
+	p && *p p AND operatoriin ehnii utga false bol ariin uildel hiigddeggui
+	
+	Shift operations 
+		left shift x << y: 
+			shift bit-vector x left y positions
+				Throw away extra bits on left
+			Fill with 0's on right
+		right shift x >> y:
+			shift bit-vector x right y positions
+				throw away extra bits on right
+			Logical shift
+				fill with 0's on right
+			Arithmetic shift:
+				replicate most significant bit on left
+	
+	
+	signed and unsigned tmax umax oloh
+		mapping signed -> unsigned
+		
+		conversion visualized 2's  comp -> unsigned
+		
+		
+	signed vs unsigned in C
+	
+	
+	|Summary
+	|casting signed <-> unsigned : basic rules
+	|	bit pattern is maintained
+	|	but reinterpreted
+	|	can have unexpected effects, adding or sub 2^w
+	|	int is cast to unsigned !!!
+	
+	
+	Sing extension
+	
+	Task: 
+		given w-bit signed integer x
+		convert it to w+k bit integer with same value
+	Rule:
+		make k copies of sign bit
+		X' = xw-1 => k times  + w
+		
+		signed too = dec +- 16 8 hurtelee uuruuruu baina
+		
+		
+		
+	
+	

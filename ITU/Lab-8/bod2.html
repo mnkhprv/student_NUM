@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+  </head>
+  <body>
+    <header>
+      <nav>
+        <ul>
+          <li><a href="bod1.html">Бодлого 1</a></li>
+          <li><a href="bod2.html">Бодлого 2</a></li>
+          <li><a href="bod3.html">Бодлого 3</a></li>
+          <li><a href="bod4.html">Бодлого 4</a></li>
+          <li><a href="bod5.html">Бодлого 5</a></li>
+        </ul>
+      </nav>
+    </header>
+    <main>
+      <div class="question">
+        <p> Чоно 25 км/ц хурдтай, туулай 18 км/ц хурдтай. Гараас өгсөн зайтай байхад хэдэн минут хэдэн секундын дараа гэхэд гүйцэх вэ?</p>
+      </div>
+      <div>
+        <label for="zai">Зай (км):</label>
+        <input type="number" id="zai" placeholder="Зайг оруулна уу">
+        <button onclick="bodoh()">Шалгах</button>
+      </div>
+      <div id="output" class="output"></div>
+    </main>
+    <script>
+      function bodoh(){
+        var tuulai = 18;
+        var chono = 25;
+        var zuru = chono - tuulai;
+        var zaiInput = document.getElementById('zai');
+        var zai = parseFloat(zaiInput.value);
+
+        if (isNaN(zai) || zai <= 0) {
+          alert('0-ээс их зай(тоо) оруулна уу');
+          return;
+        }
+
+        var tsag = zai / zuru;
+        var min = tsag * 60;
+        var sec = tsag * 3600;
+        var minut = Math.floor(min);
+        var second = Math.floor((min - minut) * 60);
+
+        var output = document.getElementById('output');
+        output.textContent = `Гүйцэх хугацаа: ${minut} минут ${second} секунд`;
+      }
+    </script>
+  </body>
+</html>
