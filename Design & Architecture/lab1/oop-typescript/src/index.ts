@@ -1,0 +1,1 @@
+console.log("Сайн байна уу, TypeScript OOP!");

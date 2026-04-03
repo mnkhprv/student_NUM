@@ -1,0 +1,145 @@
+@startuml
+skinparam classAttributeIconSize 0
+skinparam monochrome true
+skinparam shadowing false
+skinparam linetype ortho
+
+' ====================== ENUMS (as notes) ======================
+note as DeviceStatusNote
+  <<enum>> DeviceStatus
+  OK
+  FAULTY
+  MAINTENANCE
+end note
+
+note as AlertTypeNote
+  <<enum>> AlertType
+  INTRUSION
+  FIRE
+  MOTION
+end note
+
+' ====================== ABSTRACT CLASS ======================
+abstract class Device {
+  + id : String
+  + status : DeviceStatus
+  + lastChecked : Date
+  + checkStatus()
+  + reportFault()
+}
+
+' ====================== CONCRETE DEVICE CLASSES ======================
+class Camera extends Device {
+  + resolution : String
+  + recording()
+}
+
+class MotionSensor extends Device {
+  + sensitivity : int
+  + detectMotion() : boolean
+}
+
+class FireAlarmDevice extends Device {
+  + detectFire() : boolean
+  + triggerAlarm()
+}
+
+' ====================== BUILDING STRUCTURE ======================
+class Room {
+  + id : String
+  + number : String
+  + floor : int
+  + addDevice(device : Device)
+}
+
+class Zone {
+  + id : String
+  + name : String
+  + responsibleGuard : SecurityGuard
+  + addRoom(room : Room)
+}
+
+class Building {
+  + id : String
+  + name : String
+  + address : String
+  + addZone(zone : Zone)
+}
+
+' ====================== ALERT & CORE SYSTEM ======================
+class Alert {
+  + id : String
+  + type : AlertType
+  + timestamp : Date
+  + description : String
+  + room : Room
+}
+
+class CentralServer {
+  + devices : Device[]
+  + monitorAllDevices()
+  + detectThreat(room : Room, threatType : String) : Alert
+  + findClosestGuard(room : Room) : SecurityGuard
+  + sendNotification(alert : Alert, guard : SecurityGuard)
+}
+
+' ====================== HUMAN ACTORS ======================
+class SecurityGuard {
+  + id : String
+  + name : String
+  + contact : String
+  + currentLocation : String
+  + receiveNotification(alert : Alert)
+}
+
+class ServiceEngineer {
+  + id : String
+  + name : String
+  + performCheck(device : Device)
+  + replaceDevice(oldDevice : Device, newDevice : Device)
+  + scheduleMaintenance()
+}
+
+' ====================== RELATIONSHIPS ======================
+
+' Composition (strong ownership - filled diamond)
+Building "1" *-- "many" Zone : contains
+Zone "1" *-- "many" Room : contains
+Room "1" *-- "many" Device : contains
+
+' Association
+CentralServer "1" -- "many" Device : monitors
+CentralServer "1" ..> Alert : generates
+Alert "1" --> "1" SecurityGuard : notifies
+CentralServer ..> SecurityGuard : findClosestGuard
+CentralServer ..> Room : detectThreat
+
+' Association with Zone and Guard
+Zone "1" --> "1" SecurityGuard : assignedTo
+
+' Association with ServiceEngineer
+ServiceEngineer "1" ..> Device : maintains
+ServiceEngineer "1" ..> CentralServer : checks
+
+' Inheritance
+Camera --|> Device
+MotionSensor --|> Device
+FireAlarmDevice --|> Device
+
+' ====================== NOTES ======================
+note bottom of CentralServer
+  Core system that monitors devices,
+  detects threats and sends notifications
+end note
+
+note right of Zone
+  Each zone has one responsible
+  SecurityGuard
+end note
+
+note left of Device
+  Abstract base class for
+  all security devices
+end note
+
+@enduml

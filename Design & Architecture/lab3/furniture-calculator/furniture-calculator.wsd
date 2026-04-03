@@ -1,0 +1,53 @@
+@startuml
+package domain {
+class Material {
+    +name: string
+    +pricePerUnit: number
+    +width: number
+    +height: number
+    +getTotalArea(): number
+    +getRemainingArea(usedArea: number): number
+}
+
+abstract class Furniture {
+    +name: string
+    +material: Material
+    +requiredWidth: number
+    +requiredHeight: number
+    +{abstract} calculateMaterialUsage(): number
+    +getMaterialCost(): number
+}
+
+class Chair extends Furniture {
+    +calculateMaterialUsage(): number
+}
+
+class Table extends Furniture {
+    +calculateMaterialUsage(): number
+}
+
+class Wardrobe extends Furniture {
+    +calculateMaterialUsage(): number
+}
+
+class Cabinet extends Furniture {
+    +calculateMaterialUsage(): number
+}
+}
+
+package business {
+class ProfitEstimator {
+    +{static} estimateProfit(furnitureList: {}, sellingPricePerUnit: number, durationInMonths: number, monthlyGrowthRate: number = 0.02): number
+}
+
+class CostCalculator {
+    +{static} calculateTotalMaterialUsage(furnitureList: {}): number
+    +{static} calculateTotalCost(furnitureList: {}): number
+}
+
+class CutOptimizer {
+    +{static} calculateRemainingMaterial(material: Material, furnitureList: {}): number
+    +{static} optimizeCutting(material: Material, items: {}): boolean
+}
+}
+@enduml

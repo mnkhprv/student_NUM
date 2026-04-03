@@ -1,0 +1,33 @@
+@startuml
+
+class Course {
+  +name: string
+  +teacher: string
+  +enrollStudent(): void
+  +assignGrade(): void
+}
+
+class Student {
+  -course: string
+  +studentId: string
+  +enroll(): void
+  +getCourse(): string
+  +getRole(): string
+}
+
+class Person {
+  +name: string
+  +age: number
+  +introduce(): string
+  +getRole(): string
+}
+
+class Teacher {
+  +subject: string
+  +teach(): string
+  +getRole(): string
+}
+
+Student --|> Person
+Teacher --|> Person
+@enduml

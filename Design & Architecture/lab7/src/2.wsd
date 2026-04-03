@@ -1,0 +1,128 @@
+@startuml
+skinparam classAttributeIconSize 0
+skinparam monochrome true
+skinparam shadowing false
+skinparam linetype ortho
+
+' ====================== ENUMS ======================
+enum TimeWindow {
+  AM
+  PM
+}
+
+enum DayOfWeek {
+  MON
+  TUE
+  WED
+  THU
+  FRI
+}
+
+' ====================== CORE CLASSES ======================
+class ShuttleCompany {
+  + id : String
+  + name : String
+  + vehicles : Vehicle[]
+  + addVehicle(v : Vehicle)
+}
+
+class School {
+  + id : String
+  + name : String
+  + address : String
+  + routes : Route[]
+  + addRoute(r : Route)
+}
+
+class Route {
+  + id : String
+  + name : String
+  + timeWindow : TimeWindow
+  + stops : Stop[]
+  + subscriptions : Subscription[]
+  + assignedVehicle : Vehicle
+  + assignedDriver : Driver
+  + addStop(s : Stop)
+  + registerSubscription(sub : Subscription)
+  + validateStopOrder() : boolean
+}
+
+class Stop {
+  + id : String
+  + name : String
+  + address : String
+  + sequence : int
+}
+
+class Vehicle {
+  + id : String
+  + plate : String
+  + capacity : int
+  + gpsDevice : GPSDevice
+  + assignedDriver : Driver
+  + getAvailableSeats(subs : Subscription[]) : int
+}
+
+class GPSDevice {
+  + id : String
+  + currentLocation : String
+  + getETA(stop : Stop) : int
+}
+
+class Driver {
+  + id : String
+  + name : String
+  + licenseNumber : String
+}
+
+class Guardian {
+  + id : String
+  + name : String
+  + phone : String
+  + email : String
+  + children : Child[]
+  + receiveNotification(msg : String)
+}
+
+class Child {
+  + id : String
+  + name : String
+  + age : int
+  + pickupTag : PickupTag
+  + guardian : Guardian
+  + validateAge() : boolean
+}
+
+class PickupTag {
+  + tagId : String
+  + childId : String
+  + scan(stop : Stop, timestamp : Date, status : String) : TripLog
+}
+
+class TripLog {
+  + id : String
+  + timestamp : Date
+  + stop : Stop
+  + childId : String
+  + status : String
+}
+
+class Dispatcher {
+  + assignVehicleToRoute(route : Route, vehicle : Vehicle, driver : Driver) : boolean
+}
+
+
+
+Vehicle "1" *-- "1" GPSDevice 
+Child "1" *-- "1" PickupTag 
+Child "many" --- "many" Route
+Guardian "1" o-- "many" Child 
+
+ShuttleCompany "1" o-- "many" Vehicle 
+School "many" -- "many" Route 
+Route "1" o-- "many" Stop 
+Vehicle "*" -- "*" Route
+PickupTag "1" -- "many" TripLog 
+Vehicle "1" -- "1" Driver 
+Child *-- TripLog
+@enduml
