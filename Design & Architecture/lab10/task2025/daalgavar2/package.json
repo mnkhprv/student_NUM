@@ -1,0 +1,11 @@
+{
+  "name": "lab11-daalgavar2",
+  "version": "1.0.0",
+  "private": true,
+  "main": "dist/main.js",
+  "scripts": {
+    "build": "node ../dasgal2/node_modules/typescript/bin/tsc -p tsconfig.json",
+    "start": "node dist/main.js"
+  },
+  "type": "commonjs"
+}

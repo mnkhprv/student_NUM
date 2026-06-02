@@ -1,0 +1,23 @@
+mindmap
+  root((src))
+    domain
+      entity
+        Member.ts
+        BookCopy.ts
+        Loan.ts
+        CopyStatus.ts
+      business
+        MemberRepo.ts
+        CopyRepo.ts
+        LoanRepo.ts
+    business
+      services
+        BorrowBookService.ts
+    infrastructure
+      repositories
+        in-memory
+          InMemoryRepo.ts
+    presentation
+      controllers
+        LibraryController.ts
+    main.ts

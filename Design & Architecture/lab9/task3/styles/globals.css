@@ -1,0 +1,21 @@
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Arial', serif;
+  background: #f5efe6;
+  color: #3b2f2f;
+  min-height: 100vh;
+}
+
+a {
+  color: #7c4f2f;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}

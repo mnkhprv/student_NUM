@@ -48,6 +48,39 @@ def load_feature_dictionary(file):
             glove_map[word] = np.array(embedding, dtype=float)
     return glove_map
 
+def compute_feature_vector(review, glove_dict):
+    """
+    1. Өгүүлбэрийг үгсээр салгана.
+    2. GloVe толинд байгаа үгсийг шүүнэ (Trim).
+    3. Шүүгдсэн үгсийн векторуудын дунджийг тооцоолно.
+    """
+    words = review.split()
+    embeddings = [glove_dict[w] for w in words if w in glove_dict]
+    
+    if len(embeddings) > 0:
+        avg_vec = np.mean(embeddings, axis=0)
+    else:
+        avg_vec = np.zeros(VECTOR_LEN)
+        
+    return avg_vec
+
+
+def write_formatted_file(input_file, output_file, glove_dict):
+    """
+    Өгөгдлийг боловсруулаад заагдсан гаралтын файл руу бичнэ.
+    Формат: label \t val1 \t val2 ... \t val300
+    """
+    dataset = load_tsv_dataset(input_file)
+    
+    with open(output_file, 'w', encoding='utf-8') as f:
+        for label, review in dataset:
+            feature_vec = compute_feature_vector(review, glove_dict)
+            line = f"{label:.6f}"
+            for val in feature_vec:
+                line += f"\t{val:.6f}"
+            f.write(line + "\n")
+
+
 
 if __name__ == '__main__':
     # This takes care of command line argument parsing for you!
@@ -66,3 +99,8 @@ if __name__ == '__main__':
     parser.add_argument("test_out", type=str, 
                         help='path to output .tsv file to which the feature extractions on the test data should be written')
     args = parser.parse_args()
+
+    glove_dict = load_feature_dictionary(args.feature_dictionary_in)
+    write_formatted_file(args.train_input, args.train_out, glove_dict)
+    write_formatted_file(args.validation_input, args.validation_out, glove_dict)
+    write_formatted_file(args.test_input, args.test_out, glove_dict)

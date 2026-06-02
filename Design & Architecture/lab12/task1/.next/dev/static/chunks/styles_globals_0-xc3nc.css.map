@@ -1,0 +1,6 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 1, "column": 0}, "map": {"version":3,"sources":["file:///home/lunatic/Desktop/Design%20%26%20Architecture/lab12/task1/styles/globals.css"],"sourcesContent":[":root {\n    --bg: #1a1208;\n    --surface: #2a1f0f;\n    --card: #3a2c18;\n    --border: #6b4c2a;\n    --orange: #e8822a;\n    --orange-light: #f4a55a;\n    --text: #f5e6d0;\n    --muted: #b8956a;\n}\n\n* {\n    box-sizing: border-box;\n    margin: 0;\n    padding: 0;\n}\n\nbody {\n    background: var(--bg);\n    color: var(--text);\n    font-family: 'Georgia', serif;\n    min-height: 100vh;\n}\n"],"names":[],"mappings":"AAAA;;;;;;;;;;;AAWA;;;;;;AAMA"}}]
+}

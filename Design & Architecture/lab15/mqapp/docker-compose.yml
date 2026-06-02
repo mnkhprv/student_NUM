@@ -1,0 +1,42 @@
+services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - mq-net
+
+  producer:
+    build: ./producer-service
+    ports:
+      - "4000:4000"
+    environment:
+      - RABBITMQ_URL=amqp://rabbitmq
+    depends_on:
+      - rabbitmq
+    networks:
+      - mq-net
+
+  consumer:
+    build: ./consumer-service
+    environment:
+      - RABBITMQ_URL=amqp://rabbitmq
+    depends_on:
+      - rabbitmq
+    networks:
+      - mq-net
+
+  web-app:
+    build: ./web-app
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API=http://producer:4000
+    depends_on:
+      - producer
+    networks:
+      - mq-net
+
+networks:
+  mq-net:

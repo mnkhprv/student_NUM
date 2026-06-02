@@ -1,0 +1,36 @@
+@startuml
+
+' Prototype interface
+interface "Prototype<T>" as Prototype {
+    +clone() : T
+}
+
+' Book class
+class Book {
+    +title : string
+    +author : string
+    +year : number
+
+    +Book(title : string, author : string, year : number)
+    +clone() : Book
+}
+
+' Relationship
+Prototype <|.. Book
+
+' Object usage example
+object originalBook {
+    title = "Монголын Түүх"
+    author = "Г. Бат"
+    year = 2020
+}
+
+object clonedBook {
+    title = "Монголын Түүх"
+    author = "Г. Бат"
+    year = 2020
+}
+
+originalBook --> clonedBook : clone()
+
+@enduml
