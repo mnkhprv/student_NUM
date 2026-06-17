@@ -1,0 +1,7 @@
+# Block all node_modules everywhere in the repo
+**/node_modules/
+*.node
+
+# Block local python virtual environments
+.venv/
+__pycache__/
