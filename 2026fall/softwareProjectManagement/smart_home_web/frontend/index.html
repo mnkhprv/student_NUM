@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ухаалаг гэр</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>Ухаалаг гэр</h1>
+    <div id="devices"></div>
+  </header>
+
+  <section class="cards">
+    <div class="card"><span>Температур</span><b id="temp">--</b></div>
+    <div class="card"><span>Чийгшил</span><b id="hum">--</b></div>
+    <div class="card"><span>Гэрэл</span><b id="light">--</b></div>
+    <div class="card"><span>Хөдөлгөөн</span><b id="motion">--</b></div>
+    <div class="card"><span>Зай</span><b id="dist">--</b></div>
+  </section>
+
+  <div id="alert" class="alert" hidden>Анхааруулга: температур 30°C-ээс өндөр байна!</div>
+
+  <section class="box">
+    <h2>Удирдлага</h2>
+    <p>Горим:
+      <button id="mode-auto" onclick="send('mode','auto')">Автомат</button>
+      <button id="mode-manual" onclick="send('mode','manual')">Гараар</button>
+    </p>
+    <p id="hint" class="hint">Автомат горимд товчнууд идэвхгүй. Гараар удирдахын тулд "Гараар" горимыг сонго.</p>
+    <table>
+      <tr>
+        <td>LED</td><td id="st-led"></td>
+        <td><button class="ctl" onclick="send('led','on')">Асаах</button>
+            <button class="ctl" onclick="send('led','off')">Унтраах</button></td>
+      </tr>
+      <tr>
+        <td>Хаалга (servo)</td><td id="st-servo"></td>
+        <td><button class="ctl" onclick="send('servo','open')">Нээх</button>
+            <button class="ctl" onclick="send('servo','closed')">Хаах</button></td>
+      </tr>
+      <tr>
+        <td>Сэнс (relay)</td><td id="st-relay"></td>
+        <td><button class="ctl" onclick="send('relay','on')">Асаах</button>
+            <button class="ctl" onclick="send('relay','off')">Унтраах</button></td>
+      </tr>
+      <tr>
+        <td>Buzzer</td><td id="st-buzzer"></td>
+        <td><button class="ctl" onclick="send('buzzer','on')">Асаах</button>
+            <button class="ctl" onclick="send('buzzer','off')">Унтраах</button></td>
+      </tr>
+    </table>
+  </section>
+
+  <section class="box">
+    <h2>Температур, чийгшил (сүүлийн 1 цаг)</h2>
+    <canvas id="chart" height="110"></canvas>
+    <p id="summary"></p>
+  </section>
+
+  <section class="box">
+    <h2>Үйл явдлууд</h2>
+    <ul id="events"></ul>
+  </section>
+
+  <script src="/vendor/chart.umd.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

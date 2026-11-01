@@ -1,7 +1,39 @@
 # Block all node_modules everywhere in the repo
-**/node_modules/
+**/node_modules
 *.node
 
 # Block local python virtual environments
 .venv/
 __pycache__/
+
+# Next.js build output and caches
+.next/
+
+# Codex / tool scratch folders
+.codex-finalizer/
+.tmp_google_docs/
+
+# Font cache accidentally created inside the repo
+2026fall/var/
+
+# Large ML data and model checkpoints (over GitHub's 100 MB limit)
+*.pt
+*.mat
+
+# Compiled objects
+*.o
+
+# Separate repos with their own remotes (not part of student_NUM)
+2026fall/task_tracker_sprint06/
+2026fall/MobileApplications/
+2026fall/softwareProjectDocumentation/
+2026fall/num-hooloo-avya/
+Projects/buddhist-tour-platform/
+
+# Files holding access tokens - never commit
+github.txt
+gitlab.txt
+
+# Files holding access tokens - never commit
+github.txt
+gitlab.txt

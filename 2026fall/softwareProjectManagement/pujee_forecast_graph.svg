@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900">
+  <rect width="1600" height="900" fill="#fde9e8"/>
+  <text x="90" y="105" font-family="Arial, sans-serif" font-size="58" font-weight="700" fill="#174ea6">Таамгийн график</text>
+  <text x="90" y="160" font-family="Arial, sans-serif" font-size="28" fill="#444">Дуусах хугацааны шинэчлэл ба 10 сарын 12-ны анхны зорилт</text>
+  <line x1="210" y1="720" x2="1450" y2="720" stroke="#333" stroke-width="4"/>
+  <line x1="210" y1="230" x2="210" y2="720" stroke="#333" stroke-width="4"/>
+  <line x1="210" y1="540" x2="1450" y2="540" stroke="#d94f70" stroke-width="4" stroke-dasharray="16 12"/>
+  <text x="1180" y="525" font-family="Arial, sans-serif" font-size="25" fill="#b4234d">Анхны зорилт: 10/12</text>
+  <g font-family="Arial, sans-serif" font-size="26" fill="#333">
+    <text x="125" y="725">10/12</text><text x="125" y="605">10/14</text><text x="125" y="485">10/16</text><text x="125" y="365">10/18</text>
+    <text x="280" y="770">10/1</text><text x="600" y="770">10/3</text><text x="920" y="770">10/6</text><text x="1240" y="770">10/9</text>
+  </g>
+  <text x="45" y="300" font-family="Arial, sans-serif" font-size="24" fill="#333" transform="rotate(-90 45 300)">Таамагласан дуусах өдөр</text>
+  <text x="720" y="840" font-family="Arial, sans-serif" font-size="26" fill="#333">Тооцоо хийсэн өдөр</text>
+  <polyline points="330,540 650,420 970,300 1290,420" fill="none" stroke="#174ea6" stroke-width="8"/>
+  <g fill="#174ea6" stroke="#fff" stroke-width="6">
+    <circle cx="330" cy="540" r="18"/><circle cx="650" cy="420" r="18"/><circle cx="970" cy="300" r="18"/><circle cx="1290" cy="420" r="18"/>
+  </g>
+  <g font-family="Arial, sans-serif" font-size="25" font-weight="700" fill="#174ea6">
+    <text x="290" y="510">10/12</text><text x="610" y="390">10/14</text><text x="930" y="270">10/18</text><text x="1250" y="390">10/16</text>
+  </g>
+  <text x="900" y="205" font-family="Arial, sans-serif" font-size="28" font-weight="700" fill="#b4234d">Хамгийн их хойшлолт: MQTT reconnect алдаа</text>
+</svg>

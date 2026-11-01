@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="700" viewBox="0 0 1200 700">
+<rect width="1200" height="700" fill="#fff7fb"/>
+<text x="600" y="54" text-anchor="middle" font-family="Arial, sans-serif" font-size="30" font-weight="700" fill="#222">Таамгийн график</text>
+<text x="600" y="90" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" fill="#555">Тооцооллын үе шат ба дуусах хугацаа</text>
+<line x1="130" y1="590" x2="1100" y2="590" stroke="#555" stroke-width="2"/>
+<line x1="130" y1="130" x2="130" y2="590" stroke="#555" stroke-width="2"/>
+<g font-family="Arial, sans-serif" font-size="16" fill="#555" text-anchor="end">
+  <text x="115" y="595">0</text><text x="115" y="503">2</text><text x="115" y="411">4</text><text x="115" y="319">6</text><text x="115" y="227">8</text><text x="115" y="135">10</text>
+</g>
+<g stroke="#ddd" stroke-width="1">
+  <line x1="130" y1="498" x2="1100" y2="498"/><line x1="130" y1="406" x2="1100" y2="406"/><line x1="130" y1="314" x2="1100" y2="314"/><line x1="130" y1="222" x2="1100" y2="222"/><line x1="130" y1="130" x2="1100" y2="130"/>
+</g>
+<line x1="130" y1="130" x2="1100" y2="130" stroke="#c94b78" stroke-width="3" stroke-dasharray="10 8"/>
+<text x="1090" y="118" text-anchor="end" font-family="Arial, sans-serif" font-size="17" fill="#c94b78">Төлөвлөсөн: 10 долоо хоног</text>
+<polyline points="220,510 450,494 700,305 950,257" fill="none" stroke="#2f75b5" stroke-width="5"/>
+<g fill="#2f75b5" stroke="#fff" stroke-width="3">
+  <circle cx="220" cy="510" r="9"/><circle cx="450" cy="494" r="9"/><circle cx="700" cy="305" r="9"/><circle cx="950" cy="257" r="9"/>
+</g>
+<g font-family="Arial, sans-serif" font-size="17" fill="#222" text-anchor="middle">
+  <text x="220" y="470">PERT 1.74</text><text x="450" y="454">PERT + нөөц 2.09</text><text x="700" y="265">FP үндсэн 6.20</text><text x="950" y="217">FP дээд 7.23</text>
+  <text x="220" y="625">PERT</text><text x="450" y="625">PERT + нөөц</text><text x="700" y="625">FP үндсэн</text><text x="950" y="625">FP дээд</text>
+</g>
+<text x="35" y="365" transform="rotate(-90 35 365)" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" fill="#333">Дуусах хугацаа, 7 хоног</text>
+<text x="615" y="675" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" fill="#333">Тооцооллын үе шат</text>
+</svg>
