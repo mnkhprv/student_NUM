@@ -1,0 +1,254 @@
+<title>Үндсэн хуулийн код ревью</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Noto+Serif:wght@400;600&display=swap">
+<style>
+/* Layout: issue-tracker over a statute — summary strip, tabbed views, statute text set in serif beside its findings */
+:root{
+  --bg:#f5f6f8; --surface:#ffffff; --ink:#18212d; --muted:#5b6676; --line:#dde1e7;
+  --accent:#1d5c86; --accent-soft:#e3edf5;
+  --crit:#b3261e; --high:#c2610f; --med:#8a6d00; --low:#4f6b57;
+  --crit-bg:#fbe9e7; --high-bg:#fdf0e3; --med-bg:#f8f2d8; --low-bg:#e8f0ea;
+  --mark:#fff2b8;
+  --f-display:"Noto Serif",Georgia,"Times New Roman",serif;
+  --f-body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#11161d; --surface:#171e27; --ink:#e4e8ee; --muted:#98a3b3; --line:#2a3441;
+  --accent:#7db4dc; --accent-soft:#1b2b3a;
+  --crit:#f08a80; --high:#f0a868; --med:#d9c060; --low:#93bb9e;
+  --crit-bg:#3a1e1c; --high-bg:#3a2a1a; --med-bg:#33301a; --low-bg:#1e2d23; --mark:#4a4220; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#11161d; --surface:#171e27; --ink:#e4e8ee; --muted:#98a3b3; --line:#2a3441;
+  --accent:#7db4dc; --accent-soft:#1b2b3a;
+  --crit:#f08a80; --high:#f0a868; --med:#d9c060; --low:#93bb9e;
+  --crit-bg:#3a1e1c; --high-bg:#3a2a1a; --med-bg:#33301a; --low-bg:#1e2d23; --mark:#4a4220; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:15px/1.55 var(--f-body);margin:0}
+.wrap{max-width:1180px;margin:0 auto;padding-block:28px 64px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1{font:600 clamp(24px,3.4vw,34px)/1.2 var(--f-display);margin:0;text-wrap:balance}
+h2{font:600 19px/1.3 var(--f-display);margin:0;text-wrap:balance}
+.sub{color:var(--muted);margin:6px 0 0;max-width:70ch}
+.sub a{color:var(--accent)}
+.strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:6px;overflow:hidden;margin:22px 0 18px}
+.stat{background:var(--surface);padding:12px 14px}
+.stat b{display:block;font:600 24px/1.1 var(--f-display);font-variant-numeric:tabular-nums}
+.stat span{color:var(--muted);font-size:12px;letter-spacing:.04em;text-transform:uppercase}
+.stat.crit b{color:var(--crit)} .stat.high b{color:var(--high)}
+nav.tabs{display:flex;flex-wrap:wrap;gap:4px;border-bottom:1px solid var(--line);margin-bottom:18px}
+nav.tabs button{font:500 14px var(--f-body);background:none;border:0;border-bottom:2px solid transparent;color:var(--muted);padding:9px 12px;cursor:pointer}
+nav.tabs button[aria-selected="true"]{color:var(--ink);border-color:var(--accent)}
+button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.filters{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:14px}
+.chip{font:500 13px var(--f-body);border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:4px 11px;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}
+input[type=search]{font:14px var(--f-body);padding:7px 10px;border:1px solid var(--line);border-radius:6px;background:var(--surface);color:var(--ink);min-width:0;flex:1 1 220px}
+.count{color:var(--muted);font-size:13px;font-variant-numeric:tabular-nums}
+.issues{display:grid;gap:10px}
+.issue{background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--sev);border-radius:6px;padding:12px 14px;min-width:0}
+.issue summary{cursor:pointer;list-style:none;display:grid;grid-template-columns:auto 1fr;gap:4px 10px;align-items:start}
+.issue summary::-webkit-details-marker{display:none}
+.issue .t{font-weight:600;min-width:0}
+.meta{grid-column:2;display:flex;flex-wrap:wrap;gap:6px;font-size:12.5px;color:var(--muted)}
+.pill{font:600 11px/1 var(--f-body);letter-spacing:.05em;text-transform:uppercase;padding:4px 7px;border-radius:4px;color:var(--sev);background:var(--sevbg);white-space:nowrap}
+.sev-critical{--sev:var(--crit);--sevbg:var(--crit-bg)} .sev-high{--sev:var(--high);--sevbg:var(--high-bg)}
+.sev-medium{--sev:var(--med);--sevbg:var(--med-bg)} .sev-low{--sev:var(--low);--sevbg:var(--low-bg)}
+.art{font-family:var(--f-mono);font-size:12.5px;color:var(--accent);background:var(--accent-soft);padding:1px 6px;border-radius:3px;cursor:pointer;border:0}
+.body{margin-top:10px;display:grid;gap:8px;font-size:14px}
+.body p{margin:0;max-width:78ch}
+.lbl{font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:2px}
+.ev{font-family:var(--f-display);font-size:14.5px;border-left:2px solid var(--line);padding-left:10px}
+.fix{background:var(--accent-soft);border-radius:4px;padding:8px 10px;font-family:var(--f-display);font-size:14.5px}
+.two{display:grid;grid-template-columns:minmax(200px,280px) 1fr;gap:18px;align-items:start}
+.alist{background:var(--surface);border:1px solid var(--line);border-radius:6px;max-height:72vh;overflow:auto}
+.alist h3{font:600 11.5px var(--f-body);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:0;padding:10px 12px 4px;position:sticky;top:0;background:var(--surface)}
+.alist button{display:flex;gap:8px;width:100%;text-align:left;background:none;border:0;padding:6px 12px;color:var(--ink);font:14px var(--f-body);cursor:pointer;align-items:baseline}
+.alist button[aria-current="true"]{background:var(--accent-soft)}
+.alist .n{font-family:var(--f-mono);font-size:12.5px;color:var(--muted);min-width:2.6em;font-variant-numeric:tabular-nums}
+.alist .dots{margin-left:auto;display:flex;gap:2px}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--sev)}
+.reader{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:18px 20px;min-width:0}
+.statute{font-family:var(--f-display);font-size:16px;line-height:1.7;max-width:68ch;margin:12px 0 18px}
+.statute mark{background:var(--mark);color:inherit;padding:0 1px}
+.prov{width:100%;border-collapse:collapse;font-size:13.5px}
+.tablewrap{overflow-x:auto}
+.prov td,.prov th{border-top:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}
+.prov th{font-weight:500;color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.05em}
+.kind{font-family:var(--f-mono);font-size:12px}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:12px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:14px 16px;min-width:0}
+.verdict{font:600 12px var(--f-body);letter-spacing:.05em;text-transform:uppercase;padding:3px 8px;border-radius:4px}
+.v-fail{color:var(--crit);background:var(--crit-bg)} .v-partial{color:var(--med);background:var(--med-bg)} .v-pass{color:var(--low);background:var(--low-bg)}
+.trace{font-family:var(--f-mono);font-size:12px;color:var(--muted);overflow-x:auto;white-space:nowrap;margin-top:8px;padding-bottom:4px}
+.fsm{font-family:var(--f-mono);font-size:12.5px;display:grid;gap:3px;margin-top:8px}
+.fsm .ok{color:var(--muted)} .fsm .bad{color:var(--crit)}
+.bars{display:grid;gap:8px;margin-top:10px}
+.bar{display:grid;grid-template-columns:150px 1fr 58px;gap:10px;align-items:center;font-size:13.5px}
+.bar .track{height:12px;background:var(--line);border-radius:3px;position:relative;overflow:hidden}
+.bar .fill{position:absolute;inset:0 auto 0 0;background:var(--accent);border-radius:3px}
+.bar .num{font-variant-numeric:tabular-nums;text-align:right;color:var(--muted)}
+.cap .fill.over{background:var(--crit)}
+.note{color:var(--muted);font-size:13px;margin-top:8px}
+@media (max-width:760px){.two{grid-template-columns:1fr}.alist{max-height:260px}.bar{grid-template-columns:110px 1fr 48px}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap">
+  <header>
+    <h1>Монгол Улсын Үндсэн хуулийн код ревью</h1>
+    <p class="sub">Үндсэн хуулийн 71 зүйлийг программын код мэт загварчилж, автомат шалгагчаар ажиллуулсан үр дүн. Бүх ишлэл <a href="https://legalinfo.mn/mn/detail?lawId=367">legalinfo.mn</a>-ийн монгол эхээс үгчлэн авсан (татсан огноо <span id="fetched"></span>). Засварууд нь шинжилгээний санал бөгөөд УИХ-д өргөн мэдүүлсэн төсөл биш.</p>
+  </header>
+  <section class="strip" id="strip" aria-label="Хураангуй"></section>
+  <nav class="tabs" role="tablist" id="tabs"></nav>
+  <main id="view"></main>
+</div>
+
+<script id="data" type="application/json">__DATA__</script>
+<script>
+const D = JSON.parse(document.getElementById('data').textContent);
+const SEV = {critical:'Ноцтой',high:'Өндөр',medium:'Дунд',low:'Бага'};
+const CAT = {bug:'Алдаа',design:'Загварын сул тал',text:'Найруулга'};
+const VER = {pass:'Тэнцсэн',partial:'Хэсэгчлэн',fail:'Унасан'};
+const KIND = {right:'эрх',duty:'үүрэг',prohibition:'хориг',power:'бүрэн эрх',procedure:'процедур',declaration:'тунхаг',delegation:'хуульд шилжүүлэх'};
+const CH = {1:'I. Бүрэн эрхт байдал',2:'II. Хүний эрх',3:'III. Төрийн байгуулал',4:'IV. Засаг захиргаа',5:'V. Үндсэн хуулийн цэц',6:'VI. Нэмэлт өөрчлөлт'};
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const $ = s => document.querySelector(s);
+const store = {get(k,d){try{return JSON.parse(localStorage.getItem(k)) ?? d}catch{return d}}, set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch{}}};
+
+$('#fetched').textContent = D.fetched;
+const s = D.summary;
+$('#strip').innerHTML = [
+  ['', s.articles, 'зүйл шалгасан'], ['', s.findings, 'олдвор'],
+  ['crit', s.by_severity.critical||0, 'ноцтой'], ['high', s.by_severity.high||0, 'өндөр'],
+  ['', s.by_category.bug||0, 'процедурын алдаа'], ['', `${s.stress.fail||0}/7`, 'стресс тест унасан']
+].map(([c,v,l]) => `<div class="stat ${c}"><b>${v}</b><span>${l}</span></div>`).join('');
+
+const TABS = [['findings','Олдворууд'],['articles','Зүйлүүд'],['stress','Стресс тест'],['procedures','Процедурын гацаа'],['numbers','Тоо ба хэл']];
+let tab = TABS.some(t => '#'+t[0] === location.hash) ? location.hash.slice(1) : 'findings';
+function renderTabs(){
+  $('#tabs').innerHTML = TABS.map(([id,l]) => `<button role="tab" id="t-${id}" aria-selected="${id===tab}" data-tab="${id}">${l}</button>`).join('');
+}
+$('#tabs').addEventListener('click', e => { const b = e.target.closest('[data-tab]'); if (b) go(b.dataset.tab); });
+window.addEventListener('hashchange', () => { const h = location.hash.slice(1); if (TABS.some(t=>t[0]===h)) { tab = h; render(); } });
+function go(t, art){ tab = t; if (art) curArt = art; try{ history.replaceState(null,'','#'+t) }catch{} render(); window.scrollTo({top:0}); }
+
+const artLinks = arr => arr.map(a => /^[\d¹.]+[a-z]?$/.test(a) && D.articles.some(x => x.number === a.split('.')[0])
+  ? `<button class="art" data-art="${esc(a.split('.')[0])}">${esc(a)}</button>` : `<span>${esc(a)}</span>`).join(' ');
+
+function issueHTML(f, open=false){
+  return `<details class="issue sev-${f.severity}" ${open?'open':''}>
+    <summary><span class="pill">${SEV[f.severity]}</span><span class="t">${esc(f.title)}</span>
+    <span class="meta"><span>${CAT[f.category]}</span><span>·</span>${artLinks(f.articles)}</span></summary>
+    <div class="body">
+      ${f.detail ? `<p>${esc(f.detail)}</p>` : ''}
+      ${f.evidence ? `<div><span class="lbl">Нотолгоо</span><div class="ev">${esc(f.evidence)}</div></div>` : ''}
+      ${f.fix ? `<div><span class="lbl">Санал болгож буй засвар</span><div class="fix">${esc(f.fix)}</div></div>` : ''}
+      <span class="lbl">Дүрэм: ${esc(f.rule)}</span>
+    </div></details>`;
+}
+
+let fSev = store.get('fSev', []), fCat = store.get('fCat', []), fq = '';
+function viewFindings(){
+  const chips = (obj, sel, key) => Object.entries(obj).map(([k,l]) => `<button class="chip" data-${key}="${k}" aria-pressed="${sel.includes(k)}">${l}</button>`).join('');
+  const list = D.findings.filter(f => (!fSev.length || fSev.includes(f.severity)) && (!fCat.length || fCat.includes(f.category))
+    && (!fq || (f.title+f.detail+f.evidence+f.articles.join(' ')).toLowerCase().includes(fq.toLowerCase())));
+  return `<div class="filters">${chips(SEV,fSev,'sev')}<span class="count">·</span>${chips(CAT,fCat,'cat')}
+    <input type="search" id="fq" placeholder="Хайх: зүйл, үг (жишээ: Цэц, 33.1.1)" value="${esc(fq)}" aria-label="Олдвор хайх">
+    <span class="count">${list.length}/${D.findings.length}</span></div>
+    <div class="issues">${list.map(f => issueHTML(f)).join('') || '<p class="note">Шүүлтүүрт тохирох олдвор алга.</p>'}</div>`;
+}
+
+let curArt = store.get('art', '33');
+function highlight(text, findings){
+  let t = esc(text);
+  const quotes = findings.flatMap(f => [...f.evidence.matchAll(/«([^»]{6,})»/g)].map(m => m[1]));
+  for (const qq of [...new Set(quotes)].sort((a,b)=>b.length-a.length)) {
+    const e = esc(qq); if (t.includes(e)) t = t.split(e).join(`<mark>${e}</mark>`);
+  }
+  return t;
+}
+function viewArticles(){
+  const byCh = {};
+  D.articles.forEach(a => (byCh[a.chapter] ||= []).push(a));
+  const side = Object.entries(byCh).map(([c, arr]) => `<h3>${CH[c]}</h3>` + arr.map(a => {
+    const sev = [...new Set(a.findings.map(i => D.findings[i].severity))];
+    return `<button data-art="${esc(a.number)}" aria-current="${a.number===curArt}"><span class="n">${esc(a.number)}</span><span>${esc(a.title)}</span>
+      <span class="dots">${sev.map(s => `<i class="dot sev-${s}" title="${SEV[s]}"></i>`).join('')}</span></button>`;
+  }).join('')).join('');
+  const a = D.articles.find(x => x.number === curArt) || D.articles[0];
+  const fs = a.findings.map(i => D.findings[i]);
+  return `<div class="two"><div class="alist" role="navigation" aria-label="Зүйлүүд">${side}</div>
+    <div class="reader"><h2>${esc(a.number)} дүгээр зүйл · ${esc(a.title)}</h2>
+      <div class="statute">${highlight(a.text, fs)}</div>
+      <span class="lbl">Загварын заалтууд</span>
+      <div class="tablewrap"><table class="prov"><thead><tr><th>Заалт</th><th>Төрөл</th><th>Хэн</th><th>Агуулга</th></tr></thead><tbody>
+      ${a.provisions.map(p => `<tr><td class="kind">${esc(p.pid)}</td><td class="kind">${KIND[p.kind]}${p.delegates&&!p.limits?' ⚠':''}</td><td>${esc(p.actor||'—')}</td><td>${esc(p.summary)}${p.amended.length?` <span class="note">(${p.amended.join(', ')})</span>`:''}</td></tr>`).join('')}
+      </tbody></table></div>
+      <div style="margin-top:16px"><span class="lbl">Энэ зүйлийн олдвор (${fs.length})</span>
+      <div class="issues">${fs.map(f => issueHTML(f)).join('') || '<p class="note">Олдвор алга.</p>'}</div></div>
+    </div></div>`;
+}
+
+function viewStress(){
+  return `<div class="grid2">${D.stress.map(r => `<div class="card"><div style="display:flex;justify-content:space-between;gap:10px;align-items:start">
+    <h2>${r.n}. ${esc(r.title)}</h2><span class="verdict v-${r.verdict}">${VER[r.verdict]}</span></div>
+    <p style="margin:8px 0 0">${esc(r.break_point)}</p><div class="trace">${r.trace.map(esc).join(' ')}</div>
+    ${r.verdict_laws ? `<div style="margin-top:10px;padding-top:8px;border-top:1px dashed currentColor"><div style="display:flex;justify-content:space-between;gap:10px"><b>⚖ Хуультай хамт</b><span class="verdict v-${r.verdict_laws}">${VER[r.verdict_laws]}</span></div>
+    <p style="margin:6px 0 0">${esc(r.note_laws)}</p><div class="trace">${r.trace_laws.map(esc).join(' ')}</div></div>` : ''}</div>`).join('')}</div>`;
+}
+
+function viewProcedures(){
+  return `<p class="note" style="margin-top:0">Процедур бүрийг төлөвт машин болгосон. Улаан мөр: бодит амьдралд тохиолдож болох үйл явдал боловч Үндсэн хууль үр дагаврыг нь заагаагүй.</p>
+  <div class="grid2">${D.machines.map(m => `<div class="card"><h2>${esc(m.title)}</h2><div class="fsm">
+    ${m.transitions.map(t => `<div class="ok">${esc(t.from)} —${esc(t.event)}→ ${esc(t.to)} <span>[${esc(t.pid)}${t.deadline!=null?', '+t.deadline+' хоног':''}]</span></div>`).join('')}
+    ${m.undefined.map(u => `<div class="bad">${esc(u.state)} —${esc(u.event)}→ ??? </div><div class="note" style="margin:0 0 4px 12px;font-family:var(--f-body)">${esc(u.note)}</div>`).join('')}
+    ${layerOf(m.name)}
+  </div></div>`).join('')}</div>`;
+}
+
+function layerOf(name){
+  const l = (D.layers||[]).find(x => x.name === name);
+  if (!l || (!l.statute_edges.length && !Object.keys(l.state_notes).length)) return '';
+  return `<div class="note" style="margin:10px 0 4px;font-family:var(--f-body)"><b>⚖ Энгийн хуулиар нэмэгдсэн</b> — тодорхойгүй ${l.undefined.constitution}→${l.undefined.with_statute}, гацаа ${l.stalls.constitution}→${l.stalls.with_statute}${l.deadline_without_consequence.length ? '; хугацаатай ч үр дагаваргүй: '+l.deadline_without_consequence.map(esc).join(', ') : ''}</div>
+    ${l.statute_edges.map(e => `<div class="ok" style="opacity:.85">⚖ ${esc(e.from)} —${esc(e.event)}→ ${esc(e.to)} <span>[${esc(e.cite)}]</span></div>`).join('')}
+    ${Object.entries(l.state_notes).map(([st,n]) => `<div class="note" style="margin:0 0 4px 12px;font-family:var(--f-body)">${esc(st)}: ${esc(n)}</div>`).join('')}`;
+}
+
+function viewNumbers(){
+  const L = D.linguistics, tot = L.sentences;
+  const MOD = {descriptive:'Тодорхойлох «-на/-нэ»',permission:'Зөвшөөрөл «болно»',prohibition:'Хориг',right:'Эрх «эрхтэй»',obligation:'Үүрэг «үүрэгтэй»',soft:'Зөвлөмж «байвал зохино»'};
+  const mods = Object.entries(L.modality).sort((a,b)=>b[1]-a[1]);
+  const cap = D.capture;
+  return `<div class="grid2">
+   <div class="card"><h2>Нэг нам дангаараа юу хийж чадах вэ</h2>
+    <p class="note">126 суудлаас шаардлагатай тоо. Улаан тэмдэг: 2016 (85%), 2020 (82%) онд нэг нам эзэмшиж байсан хувь.</p>
+    <div class="bars cap">${cap.map(c => `<div class="bar"><span>${esc(c.power)} <span class="kind">${esc(c.pid)}</span></span>
+      <div class="track"><div class="fill ${c.share<=0.82?'over':''}" style="width:${c.share*100}%"></div></div><span class="num">${c.seats_needed}</span></div>`).join('')}</div>
+    <p class="note">Үндсэн хуулийг өөрчлөх босго (95) 2016, 2020 оны нэг намын суудлаас доогуур байсан тул бүх мөр улаан.</p></div>
+   <div class="card"><h2>Хэм хэмжээний хэлбэр</h2>
+    <p class="note">Монгол эхийн ${tot} өгүүлбэрийг модаль хэлбэрээр ангилсан (regex, ойролцоо).</p>
+    <div class="bars">${mods.map(([k,v]) => `<div class="bar"><span>${MOD[k]||k}</span><div class="track"><div class="fill" style="width:${v/tot*100}%"></div></div><span class="num">${v}</span></div>`).join('')}</div>
+    <p class="note">«Хуулиар тогтооно / хуульд заасан / хуулийн дагуу» хэлбэр: <b>${L.delegation_count}</b> удаа.</p></div>
+   <div class="card"><h2>Нэмэлт, өөрчлөлтийн тэмдэглэл</h2>
+    <p class="note">Монгол эх дэх «/Энэ хэсгийг ... өөрчлөн найруулсан/» тэмдэглэлүүд.</p>
+    <div class="bars">${Object.entries(D.amendments.reduce((acc,a)=>{a.years.filter(y=>y<2028).forEach(y=>acc[y]=(acc[y]||0)+1);return acc},{})).map(([y,n],_,arr)=>{const mx=Math.max(...arr.map(x=>x[1]));return `<div class="bar"><span>${y} он</span><div class="track"><div class="fill" style="width:${n/mx*100}%"></div></div><span class="num">${n}</span></div>`}).join('')}</div>
+    <p class="note">Цэцийн шийдвэрээр хүчингүй болсон өөрчлөлт: ${D.amendments.filter(a=>a.annulled_by_tsets).length} заалт (1999 оны багц, 2000 оны 02 тогтоол).</p></div>
+  </div>`;
+}
+
+function render(){
+  renderTabs();
+  $('#view').innerHTML = {findings:viewFindings, articles:viewArticles, stress:viewStress, procedures:viewProcedures, numbers:viewNumbers}[tab]();
+}
+$('#view').addEventListener('click', e => {
+  const art = e.target.closest('[data-art]');
+  if (art) { e.preventDefault(); curArt = art.dataset.art; store.set('art', curArt); go('articles'); return; }
+  const sv = e.target.closest('[data-sev]'), ct = e.target.closest('[data-cat]');
+  if (sv) { const k = sv.dataset.sev; fSev = fSev.includes(k) ? fSev.filter(x=>x!==k) : [...fSev,k]; store.set('fSev',fSev); render(); }
+  if (ct) { const k = ct.dataset.cat; fCat = fCat.includes(k) ? fCat.filter(x=>x!==k) : [...fCat,k]; store.set('fCat',fCat); render(); }
+});
+$('#view').addEventListener('input', e => {
+  if (e.target.id === 'fq') { fq = e.target.value; const pos = e.target.selectionStart; render(); const i = $('#fq'); i.focus(); i.setSelectionRange(pos,pos); }
+});
+render();
+</script>

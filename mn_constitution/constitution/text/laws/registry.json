@@ -1,0 +1,104 @@
+{
+  "_note": "law_id = legalinfo.mn lawId, fill in from the site. verified=false means the title is my proposal from the delegation topics, not yet matched to a legalinfo page. Never invent ids. delegations = constitutional pids (from delegation_index) this law is meant to fill; mapping is editorial.",
+  "laws": [
+    {
+      "key": "hural",
+      "title_mn": "Улсын Их Хурлын тухай хууль",
+      "law_id": 17140610916031,
+      "verified": true,
+      "delegations": [
+        "24.2",
+        "25.1.4",
+        "25.1.6",
+        "25.4",
+        "26.1",
+        "27.7",
+        "28.2",
+        "29.1",
+        "29.2"
+      ]
+    },
+    {
+      "key": "hural_elec",
+      "title_mn": "Улсын Их Хурлын сонгуулийн тухай хууль",
+      "law_id": 14869,
+      "verified": true,
+      "named_in_constitution": true,
+      "delegations": [
+        "21.4"
+      ]
+    },
+    {
+      "key": "pres_elec",
+      "title_mn": "Ерөнхийлөгчийн сонгуулийн тухай хууль",
+      "law_id": 16106891958781,
+      "verified": true,
+      "delegations": []
+    },
+    {
+      "key": "gov",
+      "title_mn": "Засгийн газрын тухай хууль",
+      "law_id": 344,
+      "verified": true,
+      "delegations": [
+        "38.3",
+        "46.1"
+      ]
+    },
+    {
+      "key": "courts",
+      "title_mn": "Шүүхийн тухай хууль",
+      "law_id": 16106892006021,
+      "verified": true,
+      "delegations": [
+        "47.3",
+        "48.2",
+        "49.5",
+        "49.6",
+        "51.4",
+        "52.2"
+      ]
+    },
+    {
+      "key": "tsets",
+      "title_mn": "Үндсэн хуулийн цэцийн тухай хууль",
+      "law_id": 365,
+      "verified": true,
+      "delegations": [
+        "64.3"
+      ]
+    },
+    {
+      "key": "tsets_proc",
+      "title_mn": "Үндсэн хуулийн цэцэд маргаан хянан шийдвэрлэх ажиллагааны тухай хууль",
+      "law_id": 19,
+      "verified": true,
+      "delegations": []
+    },
+    {
+      "key": "referendum",
+      "title_mn": "Бүх нийтийн санал асуулгын тухай хууль",
+      "law_id": null,
+      "verified": false,
+      "delegations": []
+    },
+    {
+      "key": "emergency",
+      "title_mn": "Онц байдлын тухай хууль",
+      "law_id": 433,
+      "verified": true,
+      "delegations": [
+        "19.2"
+      ]
+    },
+    {
+      "key": "prosecutor",
+      "title_mn": "Прокурорын тухай хууль",
+      "law_id": 12702,
+      "verified": true,
+      "delegations": [
+        "56.3"
+      ]
+    }
+  ]
+}

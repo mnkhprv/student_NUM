@@ -34,6 +34,5 @@ Projects/buddhist-tour-platform/
 github.txt
 gitlab.txt
 
-# Files holding access tokens - never commit
-github.txt
-gitlab.txt
+# Python test cache
+.pytest_cache/

@@ -1,0 +1,271 @@
+<!doctype html><meta charset=utf-8><title>mn_constitution UML</title><style>body{font-family:sans-serif;max-width:1200px;margin:2em auto}pre.mermaid{background:#fff}</style><h2>1. Бүрэлдэхүүн / өгөгдлийн урсгал</h2><pre class='mermaid'>flowchart LR
+    TXT[(undsen_khuuli_mn.txt&lt;br/&gt;legalinfo lawId=367)] --&gt; P[text_mn.py&lt;br/&gt;parse / modality / delegations]
+    P --&gt; Q{{q&amp;#40;pid, phrase&amp;#41;&lt;br/&gt;verbatim guard}}
+    A[articles.py&lt;br/&gt;71 articles, TOTAL_SEATS=126] --&gt; C
+    M[model.py] -.types.-&gt; A
+    PR[procedures.py&lt;br/&gt;8 state machines] --&gt; C[checks.py&lt;br/&gt;rules]
+    PR --&gt; S[stress.py&lt;br/&gt;7 scenarios]
+    Q --&gt; C
+    C --&gt; R[report.py]
+    S --&gt; R
+    R --&gt; J[out/report.json]
+    R --&gt; MD[out/REPORT.md]
+    J --&gt; E[explorer/build.py] --&gt; H[out/explorer.html]
+    PR --&gt; U[uml.py] --&gt; UM[docs/UML.md + out/uml.html]</pre><h2>2. Ангийн диаграм (model.py, procedures.py)</h2><pre class='mermaid'>classDiagram
+    class Article { +str number +int chapter +str title }
+    class Provision { +str pid +Kind kind +str actor +bool delegates +str limits +float deadline_days +tuple terms }
+    class Threshold { +Fraction fraction +Base base +seats_needed(total) int }
+    class Finding { +str rule +str severity +str category +tuple articles +str evidence +str fix }
+    class Machine { +str name +str start +dict transitions +dict possible +set must_act }
+    class T { +str to +str pid +str actor +float deadline_days +str default_on_timeout }
+    class Kind { &lt;&lt;enum&gt;&gt; right duty prohibition power procedure declaration delegation }
+    class Base { &lt;&lt;enum&gt;&gt; total present voters }
+    Article &quot;1&quot; *-- &quot;many&quot; Provision
+    Provision --&gt; Kind
+    Provision &quot;0..1&quot; --&gt; Threshold
+    Threshold --&gt; Base
+    Machine &quot;1&quot; *-- &quot;many&quot; T
+    Finding ..&gt; Provision : cites via q()
+    Finding ..&gt; Machine : derived from</pre><h2>3. Тохиолдол: 2025 оны 10-р сар (дараалал)</h2><pre class='mermaid'>sequenceDiagram
+    autonumber
+    actor H as УИХ
+    actor P as Ерөнхийлөгч
+    participant C as Цэц
+    participant M as PM_DISMISSAL machine
+    H-&gt;&gt;M: vote_majority_total [43.1] 2025-10-17
+    M--&gt;&gt;H: DISMISSED
+    P-&gt;&gt;M: president_veto [33.1.1] 2025-10-20
+    M--xP: ✗ UNDEFINED_TRANSITION (DISMISSED, president_veto)
+    Note over M,P: 33.1.1 «бусад шийдвэр» хамрах эсэх тодорхойгүй
+    H-&gt;&gt;C: tsets_petition [66.2.1]
+    C-&gt;&gt;M: tsets_finds_void [66.4] 2025-10-22
+    M--&gt;&gt;H: IN_OFFICE</pre><h2>4. Төлөвт машин: Ерөнхий сайдыг огцруулах (43, 33.1.1, 22.3, 66)</h2><pre class='mermaid'>stateDiagram-v2
+    direction LR
+    [*] --&gt; IN_OFFICE
+    state &quot;НӨХЦӨЛ ТОДОРХОЙГҮЙ&quot; as UNDEFINED
+    IN_OFFICE --&gt; MOTION_FILED: motion_by_quarter ‹43.1›
+    MOTION_FILED --&gt; DEBATE: debate_after_3_days ‹43.1 ≤3х›
+    DEBATE --&gt; DISMISSED: vote_majority_total ‹43.1 ≤10х›
+    DEBATE --&gt; IN_OFFICE: vote_fails ‹43.1 ≤10х›
+    DISMISSED --&gt; NEW_PM: new_pm_appointed ‹43.1 ≤30х›
+    DISMISSED --&gt; DISSOLUTION_DUE: timeout [43.1]
+    DISMISSED --&gt; TSETS_REVIEW: tsets_petition ‹66.2.1›
+    DISSOLUTION_DUE --&gt; DISSOLVED: president_dissolves ‹22.3›
+    TSETS_REVIEW --&gt; IN_OFFICE: tsets_finds_void ‹66.4›
+    TSETS_REVIEW --&gt; DISMISSED: tsets_upholds ‹66.4›
+    DISMISSED --&gt; DISSOLUTION_DUE: no_pm_in_30_days ‹22.3 ≤30х›
+    DEBATE --&gt; UNDEFINED: ✗ no_vote_within_10_days
+    DEBATE --&gt; UNDEFINED: ✗ quorum_lost
+    DISMISSED --&gt; UNDEFINED: ✗ president_veto
+    DISSOLUTION_DUE --&gt; UNDEFINED: ✗ president_does_nothing
+    TSETS_REVIEW --&gt; UNDEFINED: ✗ tsets_silent
+    note right of DISSOLUTION_DUE: STALL - president_dissolves - хугацаа, анхдагч үр дагаваргүй
+    note right of TSETS_REVIEW: STALL - tsets_finds_void - хугацаа, анхдагч үр дагаваргүй
+    classDef bad fill:#fdd,stroke:#c00,color:#900
+    classDef statute fill:#e6f0ff,stroke:#3366cc,color:#123
+    class UNDEFINED bad</pre><h2>4б. Ерөнхий сайдыг огцруулах (43, 33.1.1, 22.3, 66) + хууль</h2><pre class='mermaid'>stateDiagram-v2
+    direction LR
+    [*] --&gt; IN_OFFICE
+    state &quot;НӨХЦӨЛ ТОДОРХОЙГҮЙ&quot; as UNDEFINED
+    IN_OFFICE --&gt; MOTION_FILED: motion_by_quarter ‹43.1›
+    MOTION_FILED --&gt; DEBATE: debate_after_3_days ‹43.1 ≤3х›
+    DEBATE --&gt; DISMISSED: vote_majority_total ‹43.1 ≤10х›
+    DEBATE --&gt; IN_OFFICE: vote_fails ‹43.1 ≤10х›
+    DISMISSED --&gt; NEW_PM: new_pm_appointed ‹43.1 ≤30х›
+    DISMISSED --&gt; DISSOLUTION_DUE: timeout [43.1]
+    DISMISSED --&gt; TSETS_REVIEW: tsets_petition ‹66.2.1›
+    DISSOLUTION_DUE --&gt; DISSOLVED: president_dissolves ‹22.3›
+    TSETS_REVIEW --&gt; IN_OFFICE: tsets_finds_void ‹66.4›
+    TSETS_REVIEW --&gt; DISMISSED: tsets_upholds ‹66.4›
+    DISMISSED --&gt; DISSOLUTION_DUE: no_pm_in_30_days ‹22.3 ≤30х›
+    DISSOLVED --&gt; SNAP_ELECTION: ⚖ snap_election_called ‹⚖ Дэгийн тухай 94.1 ≤10х›
+    DEBATE --&gt; UNDEFINED: ✗ no_vote_within_10_days
+    DEBATE --&gt; UNDEFINED: ✗ quorum_lost
+    DISMISSED --&gt; UNDEFINED: ✗ president_veto
+    DISSOLUTION_DUE --&gt; UNDEFINED: ✗ president_does_nothing
+    TSETS_REVIEW --&gt; UNDEFINED: ✗ tsets_silent
+    note right of DISSOLUTION_DUE: STALL - president_dissolves - хугацаа, анхдагч үр дагаваргүй
+    note right of TSETS_REVIEW: STALL - tsets_finds_void - хугацаа, анхдагч үр дагаваргүй
+    note left of DEBATE: ⚖ ирц нээлт, санал хураалтад заавал ‹⚖ УИХ-ын тухай 21.5›
+    classDef bad fill:#fdd,stroke:#c00,color:#900
+    classDef statute fill:#e6f0ff,stroke:#3366cc,color:#123
+    class UNDEFINED bad
+    class SNAP_ELECTION statute</pre><h2>5. Төлөвт машин: Итгэл хүлээлгэх (44)</h2><pre class='mermaid'>stateDiagram-v2
+    direction LR
+    [*] --&gt; IN_OFFICE
+    state &quot;НӨХЦӨЛ ТОДОРХОЙГҮЙ&quot; as UNDEFINED
+    IN_OFFICE --&gt; DEBATE: pm_requests_confidence ‹44.1›
+    DEBATE --&gt; IN_OFFICE: passed ‹44.2 ≤13х›
+    DEBATE --&gt; DEEMED_RESIGNED: not_passed ‹44.2 ≤13х›
+    DEEMED_RESIGNED --&gt; NEW_PM: new_pm_appointed ‹44.2 ≤30х›
+    DEEMED_RESIGNED --&gt; DISSOLUTION_DUE: timeout [44.2]
+    DEEMED_RESIGNED --&gt; DISSOLUTION_DUE: no_pm_in_30_days ‹22.3 ≤30х›
+    DEBATE --&gt; UNDEFINED: ✗ no_vote_within_10_days
+    classDef bad fill:#fdd,stroke:#c00,color:#900
+    classDef statute fill:#e6f0ff,stroke:#3366cc,color:#123
+    class UNDEFINED bad</pre><h2>6. Төлөвт машин: Засгийн газар бүрдүүлэх (39.2, 22.3)</h2><pre class='mermaid'>stateDiagram-v2
+    direction LR
+    [*] --&gt; AFTER_ELECTION
+    state &quot;НӨХЦӨЛ ТОДОРХОЙГҮЙ&quot; as UNDEFINED
+    AFTER_ELECTION --&gt; NOMINATED: party_nominates ‹39.2›
+    NOMINATED --&gt; SUBMITTED: president_submits_5d ‹39.2 ≤5х›
+    SUBMITTED --&gt; PM_APPOINTED: hural_appoints ‹25.1.6 ≤45х›
+    SUBMITTED --&gt; DISSOLUTION_DUE: timeout [25.1.6]
+    SUBMITTED --&gt; DISSOLUTION_DUE: no_appointment_45d ‹22.3 ≤45х›
+    DISSOLUTION_DUE --&gt; DISSOLVED: president_dissolves ‹22.3›
+    AFTER_ELECTION --&gt; UNDEFINED: ✗ no_majority_coalition_forms
+    NOMINATED --&gt; UNDEFINED: ✗ president_misses_5d
+    DISSOLUTION_DUE --&gt; UNDEFINED: ✗ president_does_nothing
+    note right of DISSOLUTION_DUE: STALL - president_dissolves - хугацаа, анхдагч үр дагаваргүй
+    classDef bad fill:#fdd,stroke:#c00,color:#900
+    classDef statute fill:#e6f0ff,stroke:#3366cc,color:#123
+    class UNDEFINED bad</pre><h2>6б. Засгийн газар бүрдүүлэх (39.2, 22.3) + хууль</h2><pre class='mermaid'>stateDiagram-v2
+    direction LR
+    [*] --&gt; AFTER_ELECTION
+    state &quot;НӨХЦӨЛ ТОДОРХОЙГҮЙ&quot; as UNDEFINED
+    AFTER_ELECTION --&gt; NOMINATED: party_nominates ‹39.2›
+    NOMINATED --&gt; SUBMITTED: president_submits_5d ‹39.2 ≤5х›
+    SUBMITTED --&gt; PM_APPOINTED: hural_appoints ‹25.1.6 ≤45х›
+    SUBMITTED --&gt; DISSOLUTION_DUE: timeout [25.1.6]
+    SUBMITTED --&gt; DISSOLUTION_DUE: no_appointment_45d ‹22.3 ≤45х›
+    DISSOLUTION_DUE --&gt; DISSOLVED: president_dissolves ‹22.3›
+    DISSOLVED --&gt; SNAP_ELECTION: ⚖ snap_election_called ‹⚖ Дэгийн тухай 94.1 ≤10х›
+    AFTER_ELECTION --&gt; UNDEFINED: ✗ no_majority_coalition_forms
+    NOMINATED --&gt; UNDEFINED: ✗ president_misses_5d
+    DISSOLUTION_DUE --&gt; UNDEFINED: ✗ president_does_nothing
+    note right of DISSOLUTION_DUE: STALL - president_dissolves - хугацаа, анхдагч үр дагаваргүй
+    classDef bad fill:#fdd,stroke:#c00,color:#900
+    classDef statute fill:#e6f0ff,stroke:#3366cc,color:#123
+    class UNDEFINED bad
+    class SNAP_ELECTION statute</pre><h2>7. Төлөвт машин: Ерөнхийлөгчийн хориг (33.1.1)</h2><pre class='mermaid'>stateDiagram-v2
+    direction LR
+    [*] --&gt; LAW_PASSED
+    state &quot;НӨХЦӨЛ ТОДОРХОЙГҮЙ&quot; as UNDEFINED
+    LAW_PASSED --&gt; VETOED: president_vetoes ‹33.1.1›
+    LAW_PASSED --&gt; IN_FORCE: president_accepts ‹26.3›
+    VETOED --&gt; IN_FORCE: override_2_3_present ‹33.1.1›
+    VETOED --&gt; DEAD: veto_accepted ‹33.1.1›
+    LAW_PASSED --&gt; UNDEFINED: ✗ president_silent
+    VETOED --&gt; UNDEFINED: ✗ hural_never_considers
+    classDef bad fill:#fdd,stroke:#c00,color:#900
+    classDef statute fill:#e6f0ff,stroke:#3366cc,color:#123
+    class UNDEFINED bad</pre><h2>7б. Ерөнхийлөгчийн хориг (33.1.1) + хууль</h2><pre class='mermaid'>stateDiagram-v2
+    direction LR
+    [*] --&gt; LAW_PASSED
+    state &quot;НӨХЦӨЛ ТОДОРХОЙГҮЙ&quot; as UNDEFINED
+    LAW_PASSED --&gt; VETOED: president_vetoes ‹33.1.1, ⚖ Дэгийн тухай 46.5 ≤5 ажлын өдөр›
+    LAW_PASSED --&gt; IN_FORCE: president_accepts ‹26.3›
+    VETOED --&gt; IN_FORCE: override_2_3_present ‹33.1.1, ⚖ Дэгийн тухай 90.1 ≤14 ажлын өдөр›
+    VETOED --&gt; DEAD: veto_accepted ‹33.1.1, ⚖ Дэгийн тухай 90.1 ≤14 ажлын өдөр›
+    VETOED --&gt; IN_FORCE: ⚖ override_fails ‹⚖ Дэгийн тухай 46.6 ≤14 ажлын өдөр›
+    LAW_PASSED --&gt; UNDEFINED: ✗ president_silent
+    VETOED --&gt; UNDEFINED: ✗ hural_never_considers
+    note left of VETOED: ⚖ хориг хэлэлцэгдэх хүртэл хууль түр зогсоно ‹⚖ УИХ-ын тухай 5.4›
+    classDef bad fill:#fdd,stroke:#c00,color:#900
+    classDef statute fill:#e6f0ff,stroke:#3366cc,color:#123
+    class UNDEFINED bad</pre><h2>8. Төлөвт машин: Онц/дайны байдал (25.1.18, 33.1.12, 19.2)</h2><pre class='mermaid'>stateDiagram-v2
+    direction LR
+    [*] --&gt; NORMAL
+    state &quot;НӨХЦӨЛ ТОДОРХОЙГҮЙ&quot; as UNDEFINED
+    NORMAL --&gt; EMERGENCY: hural_declares ‹25.1.18›
+    NORMAL --&gt; PRES_DECREE: president_declares_in_recess ‹33.1.12›
+    PRES_DECREE --&gt; EMERGENCY: hural_approves_7d ‹33.1.12 ≤7х›
+    PRES_DECREE --&gt; NORMAL: timeout [33.1.12]
+    PRES_DECREE --&gt; NORMAL: hural_silent_7d ‹33.1.12 ≤7х›
+    PRES_DECREE --&gt; NORMAL: hural_rejects ‹33.1.12 ≤7х›
+    EMERGENCY --&gt; NORMAL: hural_lifts ‹25.1.18›
+    EMERGENCY --&gt; HURAL_HOLDS_OVER: regular_election_due ‹22.1›
+    HURAL_HOLDS_OVER --&gt; NORMAL: hural_lifts ‹22.1›
+    EMERGENCY --&gt; UNDEFINED: ✗ max_duration_reached
+    HURAL_HOLDS_OVER --&gt; UNDEFINED: ✗ max_duration_reached
+    classDef bad fill:#fdd,stroke:#c00,color:#900
+    classDef statute fill:#e6f0ff,stroke:#3366cc,color:#123
+    class UNDEFINED bad</pre><h2>8б. Онц/дайны байдал (25.1.18, 33.1.12, 19.2) + хууль</h2><pre class='mermaid'>stateDiagram-v2
+    direction LR
+    [*] --&gt; NORMAL
+    state &quot;НӨХЦӨЛ ТОДОРХОЙГҮЙ&quot; as UNDEFINED
+    NORMAL --&gt; EMERGENCY: hural_declares ‹25.1.18›
+    NORMAL --&gt; PRES_DECREE: president_declares_in_recess ‹33.1.12›
+    PRES_DECREE --&gt; EMERGENCY: hural_approves_7d ‹33.1.12 ≤7х›
+    PRES_DECREE --&gt; NORMAL: timeout [33.1.12]
+    PRES_DECREE --&gt; NORMAL: hural_silent_7d ‹33.1.12 ≤7х›
+    PRES_DECREE --&gt; NORMAL: hural_rejects ‹33.1.12 ≤7х›
+    EMERGENCY --&gt; NORMAL: hural_lifts ‹25.1.18›
+    EMERGENCY --&gt; HURAL_HOLDS_OVER: regular_election_due ‹22.1›
+    HURAL_HOLDS_OVER --&gt; NORMAL: hural_lifts ‹22.1›
+    EMERGENCY --&gt; NORMAL: ⚖ end_date_reached ‹⚖ Онц байдлын тухай 5.7›
+    EMERGENCY --&gt; EMERGENCY: ⚖ nsc_extension ‹⚖ Онц байдлын тухай 6.2›
+    EMERGENCY --&gt; NORMAL: ⚖ nsc_early_end ‹⚖ Онц байдлын тухай 6.3›
+    HURAL_HOLDS_OVER --&gt; NORMAL: ⚖ end_date_reached ‹⚖ Онц байдлын тухай 5.7›
+    HURAL_HOLDS_OVER --&gt; HURAL_HOLDS_OVER: ⚖ nsc_extension ‹⚖ Онц байдлын тухай 6.2›
+    EMERGENCY --&gt; UNDEFINED: ✗ max_duration_reached
+    HURAL_HOLDS_OVER --&gt; UNDEFINED: ✗ max_duration_reached
+    note left of EMERGENCY: ⚖ онц байдлын үед Үндсэн хуулийг өөрчлөхгүй ‹⚖ Онц байдлын тухай 19›
+    classDef bad fill:#fdd,stroke:#c00,color:#900
+    classDef statute fill:#e6f0ff,stroke:#3366cc,color:#123
+    class UNDEFINED bad</pre><h2>9. Төлөвт машин: Цэцийн хяналт (66)</h2><pre class='mermaid'>stateDiagram-v2
+    direction LR
+    [*] --&gt; PETITION
+    state &quot;НӨХЦӨЛ ТОДОРХОЙГҮЙ&quot; as UNDEFINED
+    PETITION --&gt; HEARING: tsets_accepts_case ‹66.1›
+    HEARING --&gt; CONCLUSION: conclusion_issued ‹66.2›
+    CONCLUSION --&gt; RESOLVED: hural_accepts ‹66.4›
+    CONCLUSION --&gt; RE_REVIEW: hural_rejects ‹66.3›
+    RE_REVIEW --&gt; RESOLVED: final_decision ‹66.3›
+    PETITION --&gt; UNDEFINED: ✗ tsets_ignores_petition
+    HEARING --&gt; UNDEFINED: ✗ tsets_silent
+    CONCLUSION --&gt; UNDEFINED: ✗ hural_never_considers
+    RE_REVIEW --&gt; UNDEFINED: ✗ tsets_silent
+    note right of CONCLUSION: STALL - hural_accepts - хугацаа, анхдагч үр дагаваргүй
+    note right of RE_REVIEW: STALL - final_decision - хугацаа, анхдагч үр дагаваргүй
+    classDef bad fill:#fdd,stroke:#c00,color:#900
+    classDef statute fill:#e6f0ff,stroke:#3366cc,color:#123
+    class UNDEFINED bad</pre><h2>9б. Цэцийн хяналт (66) + хууль</h2><pre class='mermaid'>stateDiagram-v2
+    direction LR
+    [*] --&gt; PETITION
+    state &quot;НӨХЦӨЛ ТОДОРХОЙГҮЙ&quot; as UNDEFINED
+    PETITION --&gt; HEARING: tsets_accepts_case ‹66.1, ⚖ Цэцийн ажиллагааны тухай 21.2 ≤14х›
+    HEARING --&gt; CONCLUSION: conclusion_issued ‹66.2›
+    CONCLUSION --&gt; RESOLVED: hural_accepts ‹66.4, ⚖ Цэцийн ажиллагааны тухай 35.2 ≤15х›
+    CONCLUSION --&gt; RE_REVIEW: hural_rejects ‹66.3, ⚖ Цэцийн ажиллагааны тухай 35.2 ≤15х›
+    RE_REVIEW --&gt; RESOLVED: final_decision ‹66.3›
+    PETITION --&gt; REFUSED: ⚖ tsets_refuses ‹⚖ Цэцийн ажиллагааны тухай 21.5 ≤14х›
+    HEARING --&gt; HEARING: ⚖ tie_vote ‹⚖ Цэцийн ажиллагааны тухай 29.6 ≤30х›
+    RE_REVIEW --&gt; RESOLVED: ⚖ no_two_thirds ‹⚖ Цэцийн ажиллагааны тухай 3.6›
+    PETITION --&gt; UNDEFINED: ✗ tsets_ignores_petition
+    HEARING --&gt; UNDEFINED: ✗ tsets_silent
+    CONCLUSION --&gt; UNDEFINED: ✗ hural_never_considers
+    RE_REVIEW --&gt; UNDEFINED: ✗ tsets_silent
+    note right of RE_REVIEW: STALL - final_decision - хугацаа, анхдагч үр дагаваргүй
+    note left of CONCLUSION: ⚖ эцсийн шийдвэр хүртэл заалт түдгэлзэнэ ‹⚖ Цэцийн ажиллагааны тухай 32.4›
+    note left of RE_REVIEW: ⚖ эцсийн шийдвэр хүртэл заалт түдгэлзэнэ ‹⚖ Цэцийн ажиллагааны тухай 32.4›
+    classDef bad fill:#fdd,stroke:#c00,color:#900
+    classDef statute fill:#e6f0ff,stroke:#3366cc,color:#123
+    class UNDEFINED bad
+    class REFUSED statute</pre><h2>10. Төлөвт машин: Ерөнхийлөгчийн сонгууль (31, 32.1, 30.2)</h2><pre class='mermaid'>stateDiagram-v2
+    direction LR
+    [*] --&gt; ROUND_1
+    state &quot;НӨХЦӨЛ ТОДОРХОЙГҮЙ&quot; as UNDEFINED
+    ROUND_1 --&gt; ELECTED: majority ‹31.4›
+    ROUND_1 --&gt; ROUND_2: no_majority ‹31.5›
+    ROUND_2 --&gt; ELECTED: majority ‹31.5›
+    ROUND_2 --&gt; ROUND_1: no_majority ‹31.6›
+    ELECTED --&gt; OATH: hural_recognizes ‹31.4›
+    OATH --&gt; NEW_PRESIDENT: oath_30d ‹32.2 ≤30х›
+    ELECTED --&gt; UNDEFINED: ✗ hural_delays_recognition
+    note right of ELECTED: STALL - hural_recognizes - хугацаа, анхдагч үр дагаваргүй
+    classDef bad fill:#fdd,stroke:#c00,color:#900
+    classDef statute fill:#e6f0ff,stroke:#3366cc,color:#123
+    class UNDEFINED bad</pre><h2>11. Төлөвт машин: Үндсэн хуульд нэмэлт өөрчлөлт (68, 69)</h2><pre class='mermaid'>stateDiagram-v2
+    direction LR
+    [*] --&gt; DRAFT
+    state &quot;НӨХЦӨЛ ТОДОРХОЙГҮЙ&quot; as UNDEFINED
+    DRAFT --&gt; ADOPTED: vote_3_4_total ‹69.1›
+    DRAFT --&gt; FROZEN: fails_twice ‹69.2›
+    DRAFT --&gt; REFERENDUM: referendum_2_3 ‹68.2›
+    REFERENDUM --&gt; ADOPTED: valid_majority ‹25.1.16›
+    FROZEN --&gt; DRAFT: new_composition ‹69.2›
+    DRAFT --&gt; UNDEFINED: ✗ within_6m_of_snap_election
+    classDef bad fill:#fdd,stroke:#c00,color:#900
+    classDef statute fill:#e6f0ff,stroke:#3366cc,color:#123
+    class UNDEFINED bad</pre><script type=module>import m from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';m.initialize({startOnLoad:true,securityLevel:'loose'});</script>
