@@ -36,3 +36,6 @@ gitlab.txt
 
 # Python test cache
 .pytest_cache/
+
+# Python test cache
+.pytest_cache/
