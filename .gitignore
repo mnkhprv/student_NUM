@@ -39,3 +39,6 @@ gitlab.txt
 
 # Python test cache
 .pytest_cache/
+
+# Copyrighted textbooks - kept out of this public repo
+2026fall/operatingSystemsTheory/operatingSystemsTheory/books/
